@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diwali Lucky Draw</title>
+
+<style>
+:root {
+    --ink: #241b32;
+    --purple: #4b176d;
+    --gold: #ffd36a;
+    --pink: #ff6b7a;
+    --cream: #fff8e9;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, Arial, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(
+        circle at top,
+        #69238b 0,
+        #2c1247 55%,
+        #170d29 100%
+    );
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.wrap {
+    max-width: 1080px;
+    margin: auto;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 22px;
+}
+
+.brand {
+    font-weight: 900;
+    letter-spacing: .4px;
+}
+
+.badge {
+    border: 1px solid #ffffff55;
+    background: #ffffff12;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #ffe8a7;
+}
+
+.hero {
+    text-align: center;
+    color: #fff;
+    margin: 20px 0 28px;
+}
+
+.eyebrow {
+    color: var(--gold);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.02;
+    margin: 10px 0;
+}
+
+.hero p {
+    color: #e8d9f2;
+    margin: 0;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--cream);
+    border: 1px solid #ffffff65;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 18px 60px #0003;
+}
+
+.wheel-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pointer {
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 34px solid #fff;
+    filter: drop-shadow(0 3px 2px #0004);
+    z-index: 2;
+    margin-bottom: -10px;
+}
+
+.wheel-shell {
+    position: relative;
+    width: min(100%, 390px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 10px;
+    background: linear-gradient(
+        135deg,
+        #fff1b7,
+        #e9a52d,
+        #fff0a5
+    );
+    box-shadow: 0 10px 24px #37114b45;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid #fff8d9;
+
+    background: conic-gradient(
+        #ff6b7a 0deg 90deg,
+        #ffd166 90deg 180deg,
+        #3dbb91 180deg 270deg,
+        #5795ff 270deg 360deg
+    );
+
+    position: relative;
+    transform: rotate(0deg);
+    transition: transform 4.4s cubic-bezier(.12, .72, .1, 1);
+    overflow: hidden;
+}
+
+.wheel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+
+    background: repeating-conic-gradient(
+        from 0deg,
+        #ffffff38 0deg 1deg,
+        transparent 1deg 90deg
+    );
+
+    pointer-events: none;
+}
+
+.label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 46%;
+    text-align: center;
+    color: #241b32;
+    font-weight: 900;
+    font-size: clamp(13px, 2vw, 18px);
+    text-shadow: 0 1px #fff8;
+    transform-origin: 0 0;
+}
+
+.hub {
+    position: absolute;
+    inset: 40%;
+    border-radius: 50%;
+    background: #fff8e9;
+    border: 5px solid #e9b648;
+    box-shadow: 0 3px 8px #0003;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 1000;
+    color: #6d2b76;
+    z-index: 1;
+}
+
+.spin {
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff6b7a, #f03f66);
+    color: #fff;
+    padding: 15px 34px;
+    font-size: 16px;
+    font-weight: 900;
+    box-shadow: 0 7px 0 #9d2344;
+    cursor: pointer;
+    margin-top: 22px;
+}
+
+.spin:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.secondary {
+    border: 1px solid #c8a4dc;
+    border-radius: 999px;
+    background: #fff;
+    color: #702b8e;
+    padding: 10px 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fine {
+    font-size: 12px;
+    color: #786d7b;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 15px;
+    max-width: 400px;
+}
+
+.result {
+    border-radius: 16px;
+    padding: 18px;
+    background: #f1e7f8;
+    border: 1px dashed #c8a4dc;
+    min-height: 100px;
+    width: min(100%, 420px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: 18px 0 0;
+}
+
+.result strong {
+    font-size: 27px;
+    color: #702b8e;
+}
+
+.result span {
+    font-size: 13px;
+    color: #766a7b;
+}
+
+.footer {
+    text-align: center;
+    color: #cdb7dc;
+    font-size: 12px;
+    margin: 22px 0 4px;
+}
+
+@media (max-width: 760px) {
+    body {
+        padding: 14px;
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 19px;
+    }
+
+    .top {
+        align-items: flex-start;
+    }
+
+    .wheel-shell {
+        width: min(88vw, 350px);
+    }
+
+    .hero {
+        margin-top: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+    <div class="top">
+        <div class="brand">✦ FESTIVE SPIN</div>
+        <div class="badge">
+            PRESET DEMO SEQUENCE · NO REAL DISCOUNTS
+        </div>
+    </div>
+
+    <header class="hero">
+        <div class="eyebrow">✨ Diwali Special ✨</div>
+        <h1 id="heroShop">Sharma Fashion House</h1>
+        <p>
+            Spin the wheel. Celebrate the season.
+            Unlock a festive offer!
+        </p>
+    </header>
+
+    <div class="layout">
+
+        <section class="card wheel-area" aria-label="Lucky draw wheel">
+
+            <div class="pointer"></div>
+
+            <div class="wheel-shell">
+
+                <div class="wheel" id="wheel">
+
+                    <div class="label"
+                        style="transform: rotate(45deg) translateY(-116px) rotate(-45deg)">
+                        2% OFF
+                    </div>
+
+                    <div class="label"
+                        style="transform: rotate(135deg) translateY(-116px) rotate(-135deg)">
+                        3% OFF
+                    </div>
+
+                    <div class="label"
+                        style="transform: rotate(225deg) translateY(-116px) rotate(-225deg)">
+                        10% OFF
+                    </div>
+
+                    <div class="label"
+                        style="transform: rotate(315deg) translateY(-116px) rotate(-315deg)">
+                        20% OFF
+                    </div>
+
+                    <div class="hub">SPIN!</div>
+
+                </div>
+            </div>
+
+            <button class="spin" id="spinBtn">
+                SPIN THE WHEEL
+            </button>
+
+            <div class="result" id="result" aria-live="polite">
+                <strong>Ready to try?</strong>
+                <span>Tap the button to reveal a sample discount.</span>
+            </div>
+
+            <p class="fine">
+                Demo only: this preview follows a preset spin sequence
+                for testing. For a live customer promotion, explain
+                the prize rules clearly.
+            </p>
+
+            <button class="secondary" id="resetBtn" style="margin-top:14px">
+                Reset demo
+            </button>
+
+        </section>
+
+    </div>
+
+    <div class="footer">
+        Concept demo for discussion · Not connected to a real shop
+        or payment system
+    </div>
+
+</div>
+
+<script>
+const wheel = document.getElementById("wheel");
+const btn = document.getElementById("spinBtn");
+const result = document.getElementById("result");
+const resetBtn = document.getElementById("resetBtn");
+
+let rotation = 0;
+let busy = false;
+let spinCount = 0;
+
+// Preset demonstration sequence
+function prizeForSpin(n) {
+    if (n === 9 || n === 12 || n === 18) {
+        return "3% OFF";
+    }
+
+    if (n === 19 || n === 26) {
+        return "10% OFF";
+    }
+
+    if (n === 37) {
+        return "20% OFF";
+    }
+
+    return "2% OFF";
+}
+
+function spin() {
+    if (busy) return;
+
+    busy = true;
+    btn.disabled = true;
+
+    spinCount++;
+
+    const prize = prizeForSpin(spinCount);
+
+    result.innerHTML = `
+        <strong>Spin ${spinCount}…</strong>
+        <span>Spinning the demo wheel</span>
+    `;
+
+    const segments = [
+        "2% OFF",
+        "3% OFF",
+        "10% OFF",
+        "20% OFF"
+    ];
+
+    const index = segments.indexOf(prize);
+    const slice = 90;
+    const targetCenter = index * slice + slice / 2;
+
+    const current = ((rotation % 360) + 360) % 360;
+    const desired = (360 - targetCenter + 360) % 360;
+    const extra = (desired - current + 360) % 360;
+
+    rotation += 1800 + extra;
+
+    wheel.style.transform = `rotate(${rotation}deg)`;
+
+    setTimeout(() => {
+        result.innerHTML = `
+            <strong>${prize}</strong>
+            <span>Demo spin #${spinCount} · Preset sequence</span>
+        `;
+
+        busy = false;
+        btn.disabled = false;
+    }, 4450);
+}
+
+function resetDemo() {
+    rotation = 0;
+    spinCount = 0;
+    busy = false;
+
+    wheel.style.transition = "none";
+    wheel.style.transform = "rotate(0deg)";
+
+    void wheel.offsetWidth;
+
+    wheel.style.transition =
+        "transform 4.4s cubic-bezier(.12, .72, .1, 1)";
+
+    result.innerHTML = `
+        <strong>Ready to try?</strong>
+        <span>Tap the button to reveal demo spin #1.</span>
+    `;
+
+    btn.disabled = false;
+}
+
+btn.addEventListener("click", spin);
+resetBtn.addEventListener("click", resetDemo);
+</script>
+
+</body>
+</html>
